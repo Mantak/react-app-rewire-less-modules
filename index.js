@@ -30,7 +30,7 @@ const cssRuleMatcher = rule =>
   rule.test && String(rule.test) === String(/\.css$/);
 
 const createLoaderMatcher = loader => rule =>
-  rule.loader && rule.loader.indexOf(`/${loader}/`) !== -1;
+  rule.loader && rule.loader.indexOf(`${path.sep}${loader}${path.sep}`) !== -1;
 const cssLoaderMatcher = createLoaderMatcher("css-loader");
 const postcssLoaderMatcher = createLoaderMatcher("postcss-loader");
 const fileLoaderMatcher = createLoaderMatcher("file-loader");
@@ -48,10 +48,10 @@ const addBeforeRule = (rulesSource, ruleMatcher, value) => {
 function createRewireLess(
   localIdentName = `[local]___[hash:base64:5]`,
   lessLoaderOptions = {},
-  include = new RegExp(`${path.sep}src${path.sep}components${path.sep}`),
-  exclude = new RegExp(`${path.sep}node_modules${path.sep}`),
+  include = /src[\\/]components/,
+  exclude = /node_modules/,
 ) {
-  return function(config, env) {
+  return function (config, env) {
     const cssRule = findRule(config.module.rules, cssRuleMatcher);
     cssRule.exclude = include;
 
